@@ -1,0 +1,88 @@
+You act as a API testerand you are developing a Spring Boot application and need to perform API testing using Mockito. You have two endpoints that need to be tested:
+
+URL: http://localhost:8080/api/v1/customer/ride/book
+Sample Data:
+
+json
+Copy code
+{
+  "dropLatitude": <dropLatitude>,
+  "dropLongitude": <dropLongitude>,
+  "pickUpLatitude": <pickUpLatitude>,
+  "pickUpLongitude": <pickUpLongitude>,
+  "pickUpTime": <pickUpTime>,
+  "date": []
+}
+You need to write API tests for this endpoint using Mockito in Spring Boot.
+
+URL: http://localhost:8080/api/v1/customer/get-current-riding
+You need to retrieve the current ride data from this endpoint. Write the necessary code to fetch the data using Mockito in Spring Boot and both testing should be in same class.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.BeforeEach;
+
+@WebMvcTest(CustomerController.class)
+public class CustomerControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Mock
+    private CustomerService customerService;
+
+    @InjectMocks
+    private CustomerController customerController;
+
+    @BeforeEach
+    public void setup() {
+        // Initialize mocks
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testBookRideEndpoint() throws Exception {
+        // Sample data for request payload
+        String requestPayload = "{\"dropLatitude\": 123.456, \"dropLongitude\": 789.012, \"pickUpLatitude\": 456.789, \"pickUpLongitude\": 321.654, \"pickUpTime\": \"2023-06-26T12:00:00\", \"date\": []}";
+
+        // Mock the behavior of the service method
+        when(customerService.bookRide(Mockito.any())).thenReturn(true);
+
+        // Perform the API call
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/customer/ride/book")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestPayload))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void testGetCurrentRideEndpoint() throws Exception {
+        // Sample data for the response
+        RideData rideData = new RideData();
+        rideData.setRideId(123);
+        rideData.setStartTime(LocalDateTime.now());
+        rideData.setEndTime(LocalDateTime.now().plusHours(1));
+
+        // Mock the behavior of the service method
+        when(customerService.getCurrentRide()).thenReturn(rideData);
+
+        // Perform the API call
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customer/get-current-riding"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.rideId").value(rideData.getRideId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.startTime").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.endTime").isNotEmpty());
+    }
+}

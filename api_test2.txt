@@ -1,0 +1,99 @@
+You act as a Tester your tasked with testing the File Upload and Download functionality of an API using RestAssured. The API allows users to upload files to the server and also retrieve/download those files. Provide the code in java  verify the proper functioning of these API endpoints.
+
+Test Plan for File Upload and Download using RestAssured:
+
+File Upload Testing:
+a. Test the "File Upload" endpoint to ensure it accepts and stores files correctly.
+b. Verify that the API returns the expected response status code (e.g., 200 OK) upon successful file upload.
+c. Check that the uploaded file is stored in the appropriate location or repository.
+d. Validate the content-type of the response and ensure it matches the uploaded file's type.
+e. Test with various file types (e.g., text, image, PDF) and sizes to ensure compatibility and handle edge cases.
+f. Verify the API's behavior when uploading multiple files simultaneously.
+g. Test the API's response when uploading files with invalid or unsupported formats.
+
+File Download Testing:
+a. Test the "File Download" endpoint to ensure it retrieves the correct file from the server.
+b. Validate that the response status code (e.g., 200 OK) is returned upon successful file retrieval.
+c. Compare the downloaded file's content with the original file to ensure data integrity.
+d. Test downloading files of various types and sizes to verify compatibility and handling of different scenarios.
+e. Validate the API's behavior when requesting a non-existent file for download.
+f. Verify the API's response when attempting to download files without proper authorization.
+g. Test the API's performance by downloading multiple files simultaneously and measuring the response time.
+
+Error Handling and Exception Testing:
+a. Test the API's behavior when encountering errors during file upload and download processes.
+b. Validate that appropriate error codes and messages are returned for different error scenarios (e.g., invalid file format, insufficient permissions, server errors).
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import java.io.File;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
+
+public class FileUploadDownloadTest {
+
+    private static final String BASE_URL = "http://api.example.com";
+    private static final String FILE_UPLOAD_ENDPOINT = "/upload";
+    private static final String FILE_DOWNLOAD_ENDPOINT = "/download";
+
+    @BeforeClass
+    public static void setup() {
+        RestAssured.baseURI = BASE_URL;
+    }
+
+    @Test
+    public void testFileUpload() {
+        File file = new File("path/to/file.txt");
+
+        given()
+            .multiPart("file", file)
+        .when()
+            .post(FILE_UPLOAD_ENDPOINT)
+        .then()
+            .statusCode(200)
+            .body("message", equalTo("File uploaded successfully"));
+    }
+
+    @Test
+    public void testFileDownload() {
+        given()
+            .pathParam("filename", "file.txt")
+        .when()
+            .get(FILE_DOWNLOAD_ENDPOINT + "/{filename}")
+        .then()
+            .statusCode(200)
+            .contentType("application/octet-stream")
+            .header("Content-Disposition", "attachment; filename=\"file.txt\"");
+    }
+
+    @Test
+    public void testNonExistentFileDownload() {
+        given()
+            .pathParam("filename", "nonexistent.txt")
+        .when()
+            .get(FILE_DOWNLOAD_ENDPOINT + "/{filename}")
+        .then()
+            .statusCode(404)
+            .body("message", equalTo("File not found"));
+    }
+
+    @Test
+    public void testFileUploadWithInvalidFormat() {
+        File file = new File("path/to/invalid.jpg");
+
+        given()
+            .multiPart("file", file)
+        .when()
+            .post(FILE_UPLOAD_ENDPOINT)
+        .then()
+            .statusCode(400)
+            .body("message", equalTo("Invalid file format"));
+    }
+
+}
+
+

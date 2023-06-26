@@ -1,0 +1,115 @@
+You act as a API tester .You are tasked with testing the API functionality of Amazon's Product Service. Your goal is to ensure that the API is functioning correctly and returning accurate results. The Product Service API allows you to retrieve information about products listed on Amazon, including details such as title, price, description, customer reviews, and more.
+
+Provide a code for API testing plan that covers the following aspects:
+
+1.Authentication and Authorization:Test the authentication mechanism of the API. Ensure that valid credentials are required to access the API endpoints.Verify that unauthorized access attempts are properly rejected with appropriate error responses.
+
+2.Endpoint Testing: Test each endpoint of the Product Service API, including retrieving product details by product ID or SKU.Searching for products based on various criteria like keywords, category, brand, etc.Retrieving product reviews and ratings.
+
+3.Input Validation:Test the API's behavior when invalid or missing parameters are provided. Verify that proper error responses are returned for different scenarios, such as missing required parameters or invalid data types.
+
+4.Response Validation:Validate the structure and content of the API responses against the expected schema.Verify that the response includes all relevant product details, such as title, price.
+
+Provide a detailed testing code you would take to execute the API testing plan for Amazon's Product Service and no need to give sample schema. Consider the tools and frameworks you would use, the types of test data you would generate, and any additional considerations to ensure a comprehensive and effective testing process.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import requests
+import pytest
+
+# Constants
+BASE_URL = 'https://api.amazon.com/product-service/v1'
+
+# Test credentials
+VALID_CREDENTIALS = {
+    'username': 'valid_username',
+    'password': 'valid_password'
+}
+INVALID_CREDENTIALS = {
+    'username': 'invalid_username',
+    'password': 'invalid_password'
+}
+
+# Test data
+VALID_PRODUCT_ID = '1234567890'
+INVALID_PRODUCT_ID = 'invalid_id'
+VALID_KEYWORDS = 'laptop'
+INVALID_KEYWORDS = ''
+VALID_CATEGORY = 'electronics'
+INVALID_CATEGORY = 'invalid_category'
+VALID_BRAND = 'Apple'
+INVALID_BRAND = ''
+
+# Test cases
+
+def test_authentication_required():
+    response = requests.get(f'{BASE_URL}/products/{VALID_PRODUCT_ID}')
+    assert response.status_code == 401
+
+def test_authentication_valid_credentials():
+    response = requests.get(
+        f'{BASE_URL}/products/{VALID_PRODUCT_ID}',
+        auth=(VALID_CREDENTIALS['username'], VALID_CREDENTIALS['password'])
+    )
+    assert response.status_code == 200
+    # Additional assertions for valid response content and structure
+
+def test_authentication_invalid_credentials():
+    response = requests.get(
+        f'{BASE_URL}/products/{VALID_PRODUCT_ID}',
+        auth=(INVALID_CREDENTIALS['username'], INVALID_CREDENTIALS['password'])
+    )
+    assert response.status_code == 401
+
+def test_get_product_by_id_valid():
+    response = requests.get(f'{BASE_URL}/products/{VALID_PRODUCT_ID}', auth=(VALID_CREDENTIALS['username'], VALID_CREDENTIALS['password']))
+    assert response.status_code == 200
+    # Additional assertions for valid response content and structure
+
+def test_get_product_by_id_invalid():
+    response = requests.get(f'{BASE_URL}/products/{INVALID_PRODUCT_ID}', auth=(VALID_CREDENTIALS['username'], VALID_CREDENTIALS['password']))
+    assert response.status_code == 404
+
+def test_search_products_by_keywords_valid():
+    response = requests.get(f'{BASE_URL}/products', params={'keywords': VALID_KEYWORDS}, auth=(VALID_CREDENTIALS['username'], VALID_CREDENTIALS['password']))
+    assert response.status_code == 200
+    # Additional assertions for valid response content and structure
+
+def test_search_products_by_keywords_invalid():
+    response = requests.get(f'{BASE_URL}/products', params={'keywords': INVALID_KEYWORDS}, auth=(VALID_CREDENTIALS['username'], VALID_CREDENTIALS['password']))
+    assert response.status_code == 400
+
+def test_search_products_by_category_valid():
+    response = requests.get(f'{BASE_URL}/products', params={'category': VALID_CATEGORY}, auth=(VALID_CREDENTIALS['username'], VALID_CREDENTIALS['password']))
+    assert response.status_code == 200
+    # Additional assertions for valid response content and structure
+
+def test_search_products_by_category_invalid():
+    response = requests.get(f'{BASE_URL}/products', params={'category': INVALID_CATEGORY}, auth=(VALID_CREDENTIALS['username'], VALID_CREDENTIALS['password']))
+    assert response.status_code == 400
+
+def test_search_products_by_brand_valid():
+    response = requests.get(f'{BASE_URL}/products', params={'brand': VALID_BRAND}, auth=(VALID_CREDENTIALS['username'], VALID_CREDENTIALS['password']))
+    assert response.status_code == 200
+    # Additional assertions for valid response content and structure
+
+def test_search_products_by_brand_invalid():
+    response = requests.get(f'{BASE_URL}/products', params={'brand': INVALID_BRAND}, auth=(VALID_CREDENTIALS['username'], VALID_CREDENTIALS['password']))
+    assert response.status_code == 400
+
+def test_get_product_reviews_valid():
+    response = requests.get(f'{BASE_URL}/products/{VALID_PRODUCT_ID}/reviews', auth=(VALID_CREDENTIALS['username'], VALID_CREDENTIALS['password']))
+    assert response.status_code == 200
+    # Additional assertions for valid response content and structure
+
+def test_get_product_reviews_invalid():
+    response = requests.get(f'{BASE_URL}/products/{INVALID_PRODUCT_ID}/reviews', auth=(VALID_CREDENTIALS['username'], VALID_CREDENTIALS['password']))
+    assert response.status_code == 404
+
+# Run the tests
+if __name__ == '__main__':
+    pytest.main(['-v'])
+
+
+
+
