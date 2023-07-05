@@ -1,0 +1,49 @@
+UAT Scenario 1: Add User
+
+Description: Verify that a user can be successfully added to the system.
+Test Steps:
+Open the system's user interface.
+Click on the "Add User" button.
+Fill in the required fields with valid user information (name, email, password).
+Click on the "Submit" button.
+Verify that the user is added to the system.
+Check if the user is displayed in the user list.
+UAT Scenario 2: Get All Users
+
+Description: Verify that all users are retrieved successfully from the system.
+Test Steps:
+Open the system's user interface.
+Click on the "Get All Users" button.
+Verify that the list of users is displayed.
+Check if the list contains the expected users.
+Verify the displayed information (name, email) for each user.
+UAT Scenario 3: Get Specific User by ID
+
+Description: Verify that a specific user can be retrieved successfully by their ID.
+Test Steps:
+Open the system's user interface.
+Enter a valid user ID in the search field.
+Click on the "Search" button.
+Verify that the user details are displayed.
+Check if the displayed information matches the expected user.
+UAT Scenario 4: Update User Information
+
+Description: Verify that a user's information can be successfully updated.
+Test Steps:
+Open the system's user interface.
+Search for a specific user by their ID.
+Click on the "Edit" button next to the user.
+Update the user's information (name) with valid data.
+Click on the "Save" button.
+Verify that the user's information is updated in the system.
+Search for the user again and check if the updated information is displayed.
+UAT Scenario 5: Delete User
+
+Description: Verify that a user can be successfully deleted from the system.
+Test Steps:
+Open the system's user interface.
+Search for the user to be deleted by their ID.
+Click on the "Delete" button next to the user.
+Confirm the deletion.
+Verify that the user is removed from the system.
+Search for the deleted user and check if they are no longer displayed.

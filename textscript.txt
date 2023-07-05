@@ -1,0 +1,117 @@
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.Mockito.*;
+
+class UserControllerTest {
+
+    @Mock
+    private UserService userService;
+
+    @InjectMocks
+    private UserController userController;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testAddUser_Positive() {
+        User user = new User("John Doe", "johndoe@example.com", "password");
+        User addedUser = new User("John Doe", "johndoe@example.com", "password");
+        when(userService.addUser(user)).thenReturn(addedUser);
+
+        ResponseEntity<User> response = userController.addUser(user);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(addedUser, response.getBody());
+        verify(userService, times(1)).addUser(user);
+    }
+
+    @Test
+    void testGetAllUsers_Positive() {
+        List<User> users = Arrays.asList(
+                new User("John Doe", "johndoe@example.com", "password"),
+                new User("Jane Smith", "janesmith@example.com", "password")
+        );
+        when(userService.getAllUsers()).thenReturn(users);
+
+        ResponseEntity<List<User>> response = userController.getAllUsers();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(users, response.getBody());
+        verify(userService, times(1)).getAllUsers();
+    }
+
+    @Test
+    void testGetUserById_Positive() {
+        String userId = "123";
+        User user = new User("John Doe", "johndoe@example.com", "password");
+        when(userService.getUserById(userId)).thenReturn(user);
+
+        ResponseEntity<User> response = userController.getUserById(userId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(user, response.getBody());
+        verify(userService, times(1)).getUserById(userId);
+    }
+
+    @Test
+    void testUpdateUser_Positive() {
+        String userId = "123";
+        User updatedUser = new User("John Doe", "johndoe@example.com", "password");
+        when(userService.getUserById(userId)).thenReturn(updatedUser);
+
+        ResponseEntity<User> response = userController.updateUser(userId, updatedUser);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(updatedUser, response.getBody());
+        verify(userService, times(1)).updateUser(userId, updatedUser);
+    }
+
+    @Test
+    void testDeleteUser_Positive() {
+        String userId = "123";
+
+        ResponseEntity<Void> response = userController.deleteUser(userId);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(userService, times(1)).deleteUser(userId);
+    }
+
+    @Test
+    void testGetUserById_Negative_UserNotFound() {
+        String userId = "123";
+        when(userService.getUserById(userId)).thenReturn(null);
+
+        ResponseEntity<User> response = userController.getUserById(userId);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
+        verify(userService, times(1)).getUserById(userId);
+    }
+
+    @Test
+    void testUpdateUser_Negative_UserNotFound() {
+        String userId = "123";
+        User updatedUser = new User("John Doe", "johndoe@example.com", "password");
+        when(userService.getUserById(userId)).thenReturn(null);
+
+        ResponseEntity<User> response = userController.updateUser(userId, updatedUser);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
+        verify(userService, never()).updateUser(userId, updatedUser);
+    }
+
+
+}
