@@ -1,0 +1,109 @@
+
+IDENTIFICATION DIVISION.
+PROGRAM-ID. USER-CRUD.
+
+DATA DIVISION.
+WORKING-STORAGE SECTION.
+01 WS-URL                PIC X(100) VALUE "http://example.com/users".
+01 WS-REQUEST-TYPE       PIC X(10).
+01 WS-RESPONSE           PIC X(1000).
+01 WS-USER-ID            PIC X(10).
+01 WS-USER-NAME          PIC X(50).
+01 WS-USER-EMAIL         PIC X(50).
+01 WS-USER-PASSWORD      PIC X(50).
+01 WS-USER-JSON          PIC X(200).
+
+PROCEDURE DIVISION.
+MAIN-PROGRAM.
+    PERFORM ADD-USER
+    PERFORM GET-ALL-USERS
+    PERFORM GET-USER-BY-ID
+    PERFORM UPDATE-USER
+    PERFORM DELETE-USER
+    STOP RUN.
+
+ADD-USER.
+    MOVE "POST" TO WS-REQUEST-TYPE.
+    MOVE "John Doe" TO WS-USER-NAME.
+    MOVE "john.doe@example.com" TO WS-USER-EMAIL.
+    MOVE "password123" TO WS-USER-PASSWORD.
+    MOVE "{" TO WS-USER-JSON.
+    STRING
+        "\"name\":\"" DELIMITED BY SIZE
+        WS-USER-NAME DELIMITED BY SIZE
+        "\",\"email\":\"" DELIMITED BY SIZE
+        WS-USER-EMAIL DELIMITED BY SIZE
+        "\",\"password\":\"" DELIMITED BY SIZE
+        WS-USER-PASSWORD DELIMITED BY SIZE
+        "\"}" DELIMITED BY SIZE
+    INTO WS-USER-JSON.
+    CALL "HTTP-REQUEST" USING WS-URL, WS-REQUEST-TYPE, WS-USER-JSON, WS-RESPONSE.
+
+GET-ALL-USERS.
+    MOVE "GET" TO WS-REQUEST-TYPE.
+    CALL "HTTP-REQUEST" USING WS-URL, WS-REQUEST-TYPE, "", WS-RESPONSE.
+
+GET-USER-BY-ID.
+    MOVE "GET" TO WS-REQUEST-TYPE.
+    MOVE "123" TO WS-USER-ID.
+    MOVE WS-URL TO WS-USER-JSON.
+    STRING
+        WS-USER-JSON DELIMITED BY SIZE
+        "/" DELIMITED BY SIZE
+        WS-USER-ID DELIMITED BY SIZE
+    INTO WS-USER-JSON.
+    CALL "HTTP-REQUEST" USING WS-USER-JSON, WS-REQUEST-TYPE, "", WS-RESPONSE.
+
+UPDATE-USER.
+    MOVE "PUT" TO WS-REQUEST-TYPE.
+    MOVE "123" TO WS-USER-ID.
+    MOVE "Jane Doe" TO WS-USER-NAME.
+    MOVE "{" TO WS-USER-JSON.
+    STRING
+        "\"name\":\"" DELIMITED BY SIZE
+        WS-USER-NAME DELIMITED BY SIZE
+        "\"}" DELIMITED BY SIZE
+    INTO WS-USER-JSON.
+    MOVE WS-URL TO WS-USER-JSON.
+    STRING
+        WS-USER-JSON DELIMITED BY SIZE
+        "/" DELIMITED BY SIZE
+        WS-USER-ID DELIMITED BY SIZE
+    INTO WS-USER-JSON.
+    CALL "HTTP-REQUEST" USING WS-USER-JSON, WS-REQUEST-TYPE, WS-USER-JSON, WS-RESPONSE.
+
+DELETE-USER.
+    MOVE "DELETE" TO WS-REQUEST-TYPE.
+    MOVE "123" TO WS-USER-ID.
+    MOVE WS-URL TO WS-USER-JSON.
+    STRING
+        WS-USER-JSON DELIMITED BY SIZE
+        "/" DELIMITED BY SIZE
+        WS-USER-ID DELIMITED BY SIZE
+    INTO WS-USER-JSON.
+    CALL "HTTP-REQUEST" USING WS-USER-JSON, WS-REQUEST-TYPE, "", WS-RESPONSE.
+
+HTTP-REQUEST USING URL-STR, REQ-TYPE, REQ-BODY, RESP-DATA.
+    * Implementation of HTTP request goes here.
+    * Make use of the URL-STR, REQ-TYPE, REQ-BODY, and RESP-DATA parameters
+    * to perform the appropriate HTTP request.
+    * This is typically done using HTTP client libraries or custom socket programming.
+    * Ensure proper error handling and response parsing.
+    * Example: use CURL or HTTP client library to send the HTTP request.
+    DISPLAY "Performing HTTP request..."
+    DISPLAY "URL: " URL-STR
+    DISPLAY "Request Type: " REQ-TYPE
+    DISPLAY "Request Body: " REQ-BODY
+    DISPLAY "Response Data: " RESP-DATA
+
+-----------------------------------------------------------------
+
+User story of above cobol code.
+
+
+User Story     	Description
+U1             I want to add a user to the system.	- The system should send an HTTP POST request to "http://example.com/users" with the user's name, email, and password in JSON format.<br>- The system should receive a response from the server and store it in the WS-RESPONSE variable.
+U2             I want to get all users from the system.	- The system should send an HTTP GET request to "http://example.com/users".<br>- The system should receive a response from the server and store it in the WS-RESPONSE variable.
+U3             I want to get a specific user by their ID.	- The system should send an HTTP GET request to "http://example.com/users/{user_id}" where {user_id} is the user's ID.<br>- The system should receive a response from the server and store it in the WS-RESPONSE variable.
+U4             I want to update a user's information.	- The system should send an HTTP PUT request to "http://example.com/users/{user_id}" where {user_id} is the user's ID.<br>- The system should include the user's updated name in the request body as JSON.<br>- The system should receive a response from the server and store it in the WS-RESPONSE variable.
+U5             I want to delete a user from the system.	- The system should send an HTTP DELETE request to "http://example.com/users/{user_id}" where {user_id} is the user's ID.<br>- The system should receive a response from the server and store it in the WS-RESPONSE variable.
