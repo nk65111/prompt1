@@ -1,0 +1,47 @@
+You have to use javascript cheerio library for performing modules in https://www.nseindia.com/ website 
+1. click on HOME
+2. get top 5 stop-nifty 50 stocks
+3. save into csv file named as "top_5_nifty.csv"
+4.hover on market data
+6. click on indices.
+7. get top 10 indices and save into csv file named "top_10_indices.csv"
+
+
+Note use await and promises if required and do error handling with try catch blocks
+--------------------------------------------------
+
+
+Scrape product information from an online store and perform following modules in https://www.amazon.com website
+
+1. Identify the target website and its structure: Determine the URL of the online store and inspect its HTML structure to understand how the product information is organized.
+2. Choose a scraping tool: Select a web scraping tool/library like BeautifulSoup or Scrapy based on your programming language preference.
+3. Write code to extract data: Use the chosen web scraping tool to write code that fetches the HTML content of the product pages, locates relevant elements (such as product names, prices, descriptions, etc.), and extracts the desired information.
+4. Handle pagination: If the online store has multiple pages for products, implement code to navigate through the pages and scrape data from each page.
+5.Store the scraped data: Save the extracted data in a suitable format, such as a CSV or JSON file, for further analysis or integration with other systems.
+
+Note: Give the proper code in python with proper exceptional handling and try catch blocks
+
+----------------------------------------------------------------------
+
+
+Extract news headlines from a news website https://www.bbc.com/news
+
+1.Identify the target website and its structure: Find a news website that publishes headlines and inspect its HTML structure to determine how the headlines are presented.
+2.Choose a scraping tool: Select a web scraping tool/library that can handle dynamic content loading, such as Selenium or Puppeteer.
+3.Write code to automate browsing: Use the chosen scraping tool to write code that automates the browsing process, navigates to the news website, and scrolls through the pages to load all the headlines.
+4.Extract the headlines: Identify the HTML elements that contain the headlines and use the scraping tool to extract the text from those elements.
+5. Process and analyze the data: Perform any necessary data processing or analysis on the extracted headlines, such as filtering by category, sentiment analysis, or topic modeling.
+
+Note: Give the proper code in python with proper exceptional handling and try catch blocks
+
+---------------------------------------------------------------
+
+Scrape job listings from a career website https://www.indeed.com/
+
+1.Identify the target website and its structure: Find a career website with job listings and inspect its HTML structure to determine how the job details are organized.
+2.Choose a scraping tool: Select a web scraping tool/library based on your preference, such as BeautifulSoup, Scrapy, or Selenium.
+3.Automate browsing and data extraction: Use the chosen scraping tool to write code that automates the browsing process, navigates to the job listings, and retrieves the required details, such as job titles, companies, locations, or descriptions.
+4.Handle pagination and filters: Implement code to handle pagination if the website has multiple pages of job listings. Additionally, consider applying filters (e.g., location, salary range) to narrow down the scraped data.
+5. Store and analyze the data: Save the extracted job data in a suitable format and perform any necessary analysis, such as filtering by keywords, sorting by salary, or visualizing the data using charts or graphs.
+
+Note: Give the proper code in python with proper exceptional handling and try catch blocks
