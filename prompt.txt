@@ -45,3 +45,64 @@ Scrape job listings from a career website https://www.indeed.com/
 5. Store and analyze the data: Save the extracted job data in a suitable format and perform any necessary analysis, such as filtering by keywords, sorting by salary, or visualizing the data using charts or graphs.
 
 Note: Give the proper code in python with proper exceptional handling and try catch blocks
+------------------------------------------------------
+
+You act as a automation developer .Follow below step and give proper code in python.
+Step 1: You need to extract data from a table on a webpage using Selenium and store it in a CSV file.
+Step 2: The webpage you're interested in is "https://www.tutorialspoint.com/difference-between-hashtable-and-concurrenthashmap-in-java".
+Step 3: Write a Python script using Selenium to accomplish this task.
+Step 4: Set the path to the ChromeDriver executable.
+Step 5: Configure Chrome options to run Chrome in headless mode (optional).
+Step 6: Initialize the ChromeDriver.
+Step 7: Open the webpage.
+Step 8: Find the table element on the webpage.
+Step 9: Extract the headers from the table.
+Step 10: Extract the rows of data from the table.
+Step 11: Close the WebDriver.
+Step 12: Write the extracted data to a CSV file named "table_data.csv".
+Step 13: Display a message indicating that the data has been saved successfully.
+
+
+--------------------------------------------------
+
+import csv
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+# Set the path to your ChromeDriver executable
+chrome_driver_path = '/path/to/chromedriver'
+
+# Configure Chrome options (optional)
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')  # Run Chrome in headless mode
+
+# Initialize ChromeDriver
+driver = webdriver.Chrome(options=chrome_options)
+
+# Open the webpage
+driver.get('https://www.tutorialspoint.com/difference-between-hashtable-and-concurrenthashmap-in-java')
+
+# Find the table element
+table = driver.find_element(By.XPATH, '//table[@class="table table-bordered"]')
+
+# Get the headers
+headers = [header.text for header in table.find_elements(By.XPATH, './/th')]
+
+# Get the rows
+rows = []
+for row in table.find_elements(By.XPATH, './/tbody/tr'):
+    row_data = [cell.text for cell in row.find_elements(By.XPATH, './/td')]
+    rows.append(row_data)
+
+# Close the WebDriver
+driver.quit()
+
+# Write data to a CSV file
+filename = 'table_data.csv'
+with open(filename, 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(headers)
+    writer.writerows(rows)
+
+print(f'Data saved to {filename}')
+
