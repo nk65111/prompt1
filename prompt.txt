@@ -106,3 +106,35 @@ with open(filename, 'w', newline='') as csvfile:
 
 print(f'Data saved to {filename}')
 
+----------------------------------------------------------------------------
+
+RDBMS to NOSQL
+
+1. You're working on a Python script to migrate SQL queries to their NoSQL equivalents for MongoDB. Begin by importing the necessary libraries.
+
+2.Now, it's time to create the core function responsible for converting the SQL query to its NoSQL equivalent. You'll use the sqlparse library for parsing the SQL query.
+
+3.You decide to test your function with a sample SQL query and execute the NoSQL query using a MongoDB client.
+
+4.After running the script, you should see the original SQL query, the table name, and its NoSQL equivalent printed to the console. You decide to further test and improve the code to handle more complex SQL queries and different database structures.
+
+
+------------------------------------------------------
+File Format Conversion
+
+User
+1. Give the Python script .  That the script will take input data in one format and convert it to another format. Provide an overview of the two formats involved and any important details about their structures.
+
+2. Start by validating the input data to ensure it adheres to the expected format. Display an error message and exit the script if the input format is incorrect or incomplete.
+
+3. Extract relevant data from the input file according to its original format. If the input format is structured (e.g., JSON, XML), use appropriate libraries or parsing techniques to access the required information.
+
+4. Create a mapping between the elements of the input format and the corresponding elements in the output format. This mapping will dictate how the data is converted from one format to another. Use a dictionary or lookup table to define this mapping clearly.
+
+5.Iterate through the input data and apply the defined mapping to convert each element to the corresponding format in the output data structure. Handle any required data type conversions or validations during this step.
+
+6.Assemble the transformed data into the desired output format. Ensure that the output adheres to the specific rules and conventions of the target format.
+
+7.Implement robust error handling mechanisms to catch any unexpected issues that may arise during the transformation process. Provide informative error messages to help users understand and resolve problems efficiently.
+
+
