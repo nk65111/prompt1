@@ -138,3 +138,19 @@ User
 7.Implement robust error handling mechanisms to catch any unexpected issues that may arise during the transformation process. Provide informative error messages to help users understand and resolve problems efficiently.
 
 
+---------------------------------------------------------------
+1.Develop an automation script using Selenium WebDriver and Python. Import the required libraries, such as requests, selenium, webdriver, By, WebDriverWait, and expected_conditions.
+
+2.Configure the WebDriver (e.g., Chrome WebDriver) to interact with the web application. Maximize the window and set up a wait instance for explicit waits.
+
+3.Set the API endpoint and the URL of the web application that you want to test.
+
+4.Write a function to send an HTTP GET request to the API and retrieve the response data in JSON format.
+
+5.Create a function to interact with the web UI using Selenium WebDriver. This may include actions like navigating to the URL, entering data, clicking buttons, etc.
+
+6.Develop a function to compare the data obtained from the API with the data fetched from the UI. Validate data consistency between the API and UI responses.
+
+7.In the main block, execute the test by calling the functions to perform API calls, UI interactions, and data comparison. Handle any exceptions that may occur during execution.
+
+
