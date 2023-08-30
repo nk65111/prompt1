@@ -1,0 +1,154 @@
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import com.itextpdf.html2pdf.ConverterProperties;
+import com.itextpdf.html2pdf.HtmlConverter;
+
+
+
+public class PdfConversion {
+     
+    public static void  changeFormat(String xmlFile, String xslPath,String xslFileName,String encDate,String encounterID,String ptAxxtNo,String enctypedesc,String pdfPath,String resourcePath){
+       
+        try {
+        	
+        	//long value1=System.currentTimeMillis();
+            String xslDeclaration = "<?xml-stylesheet type=\"text/xsl\" href=\""+xslFileName+"\"?>";
+           
+            //read xml File
+            StringBuilder xmlContent = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new StringReader(xmlFile));
+            String line;
+            int lineCount = 0;
+            while ((line = reader.readLine()) != null) {
+                xmlContent.append(line).append("\n");
+                lineCount++;
+                if (lineCount == 1) {
+                    xmlContent.append(xslDeclaration).append("\n");
+                }
+            }
+            reader.close();
+            
+            //change xsl src path
+            String fullPath=xslPath+"/"+xslFileName;
+            byte[] xslFileContent = Files.readAllBytes(Paths.get(fullPath));
+            
+            String fileContent = new String(xslFileContent, "UTF-8"); 
+            
+            fileContent=changeSrcFileInXSL(fileContent,resourcePath);
+            
+            pdfPath=pdfPath+"/"+encDate+"_"+encounterID+"_"+ptAxxtNo+"_"+enctypedesc+".pdf";
+            
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+
+            StreamSource xslStreamSource = new StreamSource(new StringReader(fileContent));
+
+            Transformer transformer = transformerFactory.newTransformer(xslStreamSource);
+
+            StreamSource xmlStreamSource = new StreamSource(new StringReader(xmlContent.toString()));
+
+            ByteArrayOutputStream htmlOutputStream = new ByteArrayOutputStream();
+            StreamResult htmlStreamResult = new StreamResult(htmlOutputStream);
+
+            transformer.transform(xmlStreamSource, htmlStreamResult);
+            String htmlContent = htmlOutputStream.toString();
+//            System.out.println(htmlContent);
+            
+            Set<String> modifyUrls=extractImagePaths(htmlContent);
+//            System.out.println(modifyUrls);
+            htmlContent= replaceImagePaths(htmlContent,modifyUrls,resourcePath);
+            // System.out.println(htmlContent);
+
+            ConverterProperties converterProperties = new ConverterProperties();
+            FileOutputStream pdfOutputStream = new FileOutputStream(pdfPath);
+            HtmlConverter.convertToPdf(new ByteArrayInputStream(htmlContent.getBytes()), pdfOutputStream, converterProperties);
+            System.out.println("PDF conversion successful. Saved to: " + pdfPath);
+            
+
+            //long value2=System.currentTimeMillis();
+            //System.out.print(value2-value1);
+       
+        } catch (Exception e) {
+           System.out.println(e.getMessage());
+           
+        }
+
+    }
+
+    
+    public static Set<String> extractImagePaths(String html) {
+        Set<String> imagePaths = new HashSet<>();
+        Pattern pattern = Pattern.compile("src=['\"](.*?)['\"]");
+        Matcher matcher = pattern.matcher(html);
+        while (matcher.find()) {
+            imagePaths.add(matcher.group(1));
+        }
+       
+        return imagePaths;
+    }
+
+    public static String replaceImagePaths(String html, Set<String> modifiedImagePaths,String resoucePath) {
+        for (String originalPath : modifiedImagePaths) {
+            if(originalPath.trim().length()!=0) {
+	            String modifiedPath = resoucePath +"/"+originalPath;
+	            
+	            modifiedPath=removeQueryParameter(modifiedPath);
+	            html = html.replace(originalPath, modifiedPath);
+            }
+        }
+        return html;
+    }
+    
+    public static String changeSrcFileInXSL(String xslFile,String rescourcePath) {
+         Pattern pattern = Pattern.compile("src=\"(.*?ecwimage.*?)\"");
+         String replacement = "src=\""+"/"+"&#123;&#36;ftppath&#125;/&#123;&#36;filename&#125;\"" +" width='350'"+ " height='300'";
+         Matcher matcher = pattern.matcher(xslFile);
+
+         String modifiedXSLString = matcher.replaceAll(replacement);
+         
+
+         return modifiedXSLString;
+    }
+    
+    public static String removeQueryParameter(String urlString) {
+    	  String cleanedPath = urlString.replaceAll("\\?.*", "");
+
+          // For Windows paths, ensure the drive letter is preserved
+          if (cleanedPath.matches("^[A-Za-z]:.*")) {
+              return cleanedPath;
+          }
+
+          // For other paths, ensure a leading slash if missing
+          if (!cleanedPath.startsWith("/")) {
+              cleanedPath = "/" + cleanedPath;
+          }
+
+          return cleanedPath;
+    }
+
+
+   
+}
+
+
+
+                 <dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>html2pdf</artifactId>
+			<version>4.0.5</version>
+		</dependency>
